@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags ptr_extras static %}
+
+
+{% block title_head %}
+Learn @ Photon Ranch
+{% endblock %}
+{% block title_suffix %}
+{% endblock %}
+
+{% block meta_title %}Home{% endblock %}
+{% block meta_description %}{{object.teaser}}{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block header_script %}
+{% endblock%}
+
+{% block unfurl %}
+<meta property="og:url" content="{{ object.get_site.root_url }}" />
+<meta property="og:title" content="Las Cumbres Observatory" />
+<meta property="og:description" content="{{object.teaser}}" />
+<meta name="twitter:site" content="@LCO_global" />
+
+{% endblock %}
+
+{% block breadcrumbs%}{% endblock %}
+
+{% block main-content %}
+<section class="hero highlight">
+  <div class="container">
+      <div class="hero-body">
+          <div class="columns">
+            <div class="column">
+                <div class="card">
+                    <div class="card-content highlight-box">
+                        <i class="fa-solid fa-book red icon-highlight is-clickable" ></i>
+                        <div class="highlight-title"><a href="/learn/">Learn</a></div>
+                        <p>Explore astronomy with our activities linked to observing</p>
+                    </div>
+                </div>
+            </div>
+            <div class="column" @click="emitObserve">
+                <div class="card">
+                    <div class="card-content highlight-box">
+                        <i class="fa-solid fa-telescope blue icon-highlight"></i>
+                        <div class="highlight-title">Observe</div>
+                        <p>Use Photon Ranch in Real Time or schedule observations</p>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <div class="card-content highlight-box">
+                    <i class="fa-solid fa-chart-line green icon-highlight" ></i>
+                    <div class="highlight-title">Data Lab</div>
+                    <p>Analyze your data using browser based tools</p>
+                    </div>
+                </div>
+            </div>
+          </div>
+      </div>
+  </div>
+  </section>
+  <section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-one-third">
+                <figure class="image is-16by9">
+                <iframe class="has-ratio" width="560" height="315" src="https://www.youtube.com/embed/5UUUTEdJ_ms?si=ATABX1KnR072O1Uh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </figure>
+            </div>
+            <div class="column">
+                <h2 class='title'>About Photon Ranch</h2>
+
+                <p>Ponam in culpa idiota aliis pravitatis. Principium ponere culpam in se justum praeceptum. Neque improperes et aliis qui non perfecte ipse docuit. Quod Enchiridion Epictetus stoici scripsit. Rodrigo Abela et Technologiae apud Massachusetts instituta Opera collectio. Ex anglicus latine translata sunt.</p>
+            </div>
+        </div>
+              <!-- Stream field rendering -->
+         {% include 'partials/stream_blocks.html' with blocks=page.content %}
+    </div>
+</section>
+
+{% endblock %}

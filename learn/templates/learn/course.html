@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags ptr_extras static %}
+
+
+{% block title_suffix %}
+{% endblock %}
+
+{% block meta_title %}{{page.title}}{% endblock %}
+{% block meta_description %}{{object.teaser}}{% endblock %}
+
+
+{% block alttitle %}{{page.title}}{% endblock %}
+{% block title %}{% endblock %}
+
+{% block content %}
+{% include 'partials/stream_blocks.html' with blocks=page.content %}
+
+<div class="content">
+<h3>Lessons</h3>
+
+<div class="columns is-multiline">
+{% for lesson in lessons %}
+    <div class="column is-one-quarter">
+        <div class="card">
+            <a href="{% pageurl lesson.lesson %}">
+            <div class="card-image">
+            <figure class="image is-4by3">
+                <img
+                src="https://picsum.photos/300/400"
+                alt="Placeholder image"
+                />
+            </figure>
+            <figcaption class="img-overlay">{{lesson.lesson.title}}</figcaption>
+            </div>
+            </a>
+        </div>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

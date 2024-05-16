@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags ptr_extras static %}
+
+
+{% block title_suffix %}
+{% endblock %}
+
+{% block meta_title %}{{page.title}}{% endblock %}
+{% block meta_description %}{{object.teaser}}{% endblock %}
+
+{% block alttitle %}{{course_title}}{% endblock %}
+
+{% block breadcrumbs%}
+
+{% if breadcrumbs|length > 0 %}
+<nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            {% for p in breadcrumbs %}
+                <li><a href="{{ p.url }}">{{ p.title }}</a></li>
+            {% endfor %}
+            <li class="is-active"><a href="#" aria-current="page" class="white">{{ self.title }}</a></li>
+        </ul>
+    </nav>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% include 'partials/stream_blocks.html' with blocks=page.content %}
+
+<div class="content">
+    <h3>Start this lesson</h3>
+<div class="columns is-multiline">
+    {% for step in steps %}
+        <div class="column is-one-quarter">
+            <div class="card">
+                <a href="{% pageurl step %}">
+                    <div class="card-image">
+                    <figure class="image is-4by3">
+                        <img
+                        src="https://picsum.photos/300/400"
+                        alt="Placeholder image"
+                        />
+                    </figure>
+                    <figcaption class="img-overlay">{{step.title}}</figcaption>
+                    </div>
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+
+{% endblock %}

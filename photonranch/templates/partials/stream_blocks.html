@@ -1,0 +1,19 @@
+{% load static wagtailcore_tags ptr_extras %}
+
+{% for block in blocks %}
+  {% if block.block_type == 'richtext' %}
+  <div class="content">
+    {{ block.value|richtext }}
+  </div>
+  {% elif block.block_type == 'imagetext' %}
+    {% include 'home/partials/image_text.html' with block=block only %}
+  {% elif block.block_type == 'table' %}
+    {% include_block block %}
+  {% elif block.block_type == 'htmltext'%}
+    {{ block.value|betterhtml}}
+  {% else %}
+    <section class="block-{{ block.block_type }}">
+      {{ block.value }}
+    </section>
+  {% endif %}
+{% endfor %}

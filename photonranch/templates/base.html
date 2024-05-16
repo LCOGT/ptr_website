@@ -1,0 +1,153 @@
+{% load static wagtailcore_tags wagtailimages_tags wagtailuserbar %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block title_head %}{{ self.title }}{% endblock %}{% block title_suffix %} - Las Cumbres Observatory{% endblock %}</title>
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="title" content="{% block meta_title %}{{page.title}}{% endblock %} - Photon Ranch by Las Cumbres Observatory" />
+    <meta name="description" content="{% block meta_description %}{{page.teaser}}{% endblock %}">
+
+    <meta property="og:type" content="website" />
+    {% block unfurl %}
+    {% if page %}
+    {% wagtail_site as current_site %}
+    <meta property="og:url" content="https://{{ current_site.hostname}}{% pageurl page %}" />
+    <meta property="og:title" content="{{page.title}}" />
+    <meta property="og:description" content="{{page.teaser}}" />
+   
+    <meta name="twitter:card" content="summary_large_image" />
+    {% if page.featured_image %}
+    {% image_url page.featured_image "width-400" as image_tmp_url %}
+    <meta property="og:image" content="https://{{ current_site.hostname}}{{image_tmp_url}}"/>
+    {% else %}
+    <meta property="og:image" content="http://lco.global/images/h1k-yI2x0RiQY-eR_2OU_HBzDWw=/393/width-600/" />
+    {% endif %}
+    <meta name="twitter:site" content="@LCO_global" />
+
+    {% endif %}
+    {% endblock %}
+
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <script src="https://kit.fontawesome.com/353238d422.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js" integrity="sha512-ju6u+4bPX50JQmgU97YOGAXmRMrD9as4LE05PdC3qycsGQmjGlfm041azyB1VfCXpkpt1i9gqXCT6XuxhBJtKg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Unica+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href='{% static 'css/photonranch.css' %}'/>
+    <link rel="stylesheet" href='{% static 'css/print.css' %}'/>
+		{% block extra_css %}{% endblock%}
+    {% block header_script %}{% endblock%}
+  </head>
+
+<body class="{% block body_class %}contentpage{% endblock %}">
+  <div id="wrapper">
+    <a class="skip-to-content-link" href="#main">
+      Skip to content
+    </a>
+    {% wagtailuserbar %}
+	<!-- Navigation -->
+
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+            <img src="{% static 'images/ptr_logo.png' %}" alt="Photon Ranch logo"/>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <div class="navbar-menu">
+        <div class="navbar-start">
+            <!-- navbar items -->
+        </div>
+
+        <div class="navbar-end">
+            <a class="navbar-item" href="/">Home</a>
+            <a class="navbar-item" href="/learn/">Learn</a>
+            <a class="navbar-item" href="/">Observe</a>
+            <a class="navbar-item" href="/">DataLab</a>
+            <div class="buttons">
+            <a class="navbar-item button red-bg" href="/">Login</a>
+            <a class="navbar-item button red-bg" href="/">Apply</a>
+
+        </div>
+        </div>
+        </div>
+    </div>
+    </nav>
+
+{% block main-content %}
+
+<section class="section">
+    <div class="container">
+      <h1 class="title-nav">Learn  <i class="fa-solid fa-chevron-right blue small"></i> {% block alttitle %}{% endblock %}</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+      {% block title %}<h2>{{page.title}}</h2>{% endblock %}
+
+      {% block breadcrumbs%}
+      {% endblock %}
+
+      {% block content %}
+      {% endblock %}
+    </div>
+</section>
+{% endblock %}
+</div> <!-- wrapper end div-->
+
+<footer class="footer">
+  <div class="container">
+    <div class="has-text-centered">
+      <ul>
+        <li><a href="/about/" class="black is-size-6">About Photon Ranch</a></li>
+        <li><a href="/news/" class="black is-size-6">News</a></li>
+        <li><a href="/observatory/privacy-policy/" class="black is-size-6">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="copyright has-text-centered  is-size-7">Copyright &copy; Las Cumbres Observatory. All rights reserved.</div>
+  </div>
+</footer>
+{% block script-footer %}
+{% endblock %}
+  <script>
+
+  $(".navbar-item.has-dropdown").click(function(e) {
+        if ($(".navbar-burger").is(':visible')) {
+          $(this).toggleClass("is-active");
+        }
+    });
+    $(".navbar-item > .navbar-link").click(function(e) {
+        if ($(".navbar-burger").is(':visible')) {
+          e.preventDefault();
+        }
+    });
+    $(window).resize(function(e) {
+      if (!$(".navbar-burger").is(':visible') && $(".navbar-item.has-dropdown.is-active").length) {
+        $(".navbar-item.has-dropdown.is-active").removeClass('is-active');
+      }
+    });
+
+  function togglehideshow(elid) {
+        var div = document.getElementById(elid);
+        if (div.style.display !== 'none') {
+            div.style.display = 'none';
+        }
+        else {
+            div.style.display = 'block';
+        }
+    };
+  </script>
+
+</body>
+</html>
