@@ -5,8 +5,11 @@
       class="has-ratio"
       width="640"
       height="360"
-      src="https://www.youtube.com/embed/{{ block.value.youtube_id }}"
+      src="https://www.youtube.com/embed/{{ block.value.video_id }}"
       frameborder="0"
       allowfullscreen
     ></iframe>
   </figure>
+  {% if block.value.caption %}
+    <p>{{ block.value.caption }}</p>
+{% endif %}
