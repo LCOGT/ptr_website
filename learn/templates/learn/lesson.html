@@ -28,25 +28,50 @@
 {% include 'partials/stream_blocks.html' with blocks=page.content %}
 
 <div class="content">
+    {% if steps %}
+    {% if request.user|pre_requisite:page %}
     <h3>Start this lesson</h3>
+    {% else %}
+    <div class="notification is-warning">
+        Complete the pre-requisite lesson to start this lesson: <a href="{% pageurl page.depends_on %}">{{page.depends_on}}</a>
+    </div>
+    {% endif %}
+
 <div class="columns is-multiline">
     {% for step in steps %}
         <div class="column is-one-quarter">
             <div class="card">
+                {% if request.user|pre_requisite:page %}
                 <a href="{% pageurl step %}">
                     <div class="card-image">
                     <figure class="image is-4by3">
                         <img
-                        src="https://picsum.photos/300/400"
+                        src="https://placehold.co/400x300?text=Lesson\nImage"
                         alt="Placeholder image"
                         />
                     </figure>
                     <figcaption class="img-overlay">{{step.title}}</figcaption>
                     </div>
                 </a>
+                {% else %}
+                <div class="card-image">
+                    <figure class="image is-4by3">
+                        <img
+                        src="https://placehold.co/400x300?text=Lesson\nImage"
+                        alt="Placeholder image"
+                        />
+                    </figure>
+                    <figcaption class="img-overlay red">{{step.title}}</figcaption>
+                    </div>
+                {% endif %}
             </div>
         </div>
     {% endfor %}
+    {% else %}
+    <div class="notification is-warning">
+        No steps have been added to this lesson yet
+      </div>
+    {% endif %}
     </div>
 
 {% endblock %}

@@ -1,7 +1,7 @@
 {% load static wagtailcore_tags wagtailimages_tags wagtailuserbar %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-dark">
   <head>
     <meta charset="utf-8">
   	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -88,7 +88,7 @@
 
 <section class="section">
     <div class="container">
-      <h1 class="title-nav">Learn  <i class="fa-solid fa-chevron-right blue small"></i> {% block alttitle %}{% endblock %}</h1>
+      <h1 class="title-nav"><a href="{% slugurl 'learn' %}">Learn</a>  <i class="fa-solid fa-chevron-right blue small"></i> {% block alttitle %}{% endblock %}</h1>
     </div>
 </section>
 

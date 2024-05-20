@@ -25,11 +25,12 @@ class CourseEnrollment(models.Model):
         verbose_name = ' Course Enrollment'
         verbose_name_plural = 'Course Enrollments'
 
+
 class LessonProgress(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
-    completion_date = models.DateField(null=True, blank=True)
+    last_update = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user} - {self.course}"
@@ -39,16 +40,18 @@ class LessonProgress(models.Model):
         verbose_name = ' Lesson Progress'
         verbose_name_plural = 'Lesson Progresses'
 
+
 class StepProgress(models.Model):
     step = models.ForeignKey(Step, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
     completion_date = models.DateField(null=True, blank=True)
+    task_info = models.TextField(blank=True) 
 
     def __str__(self):
         return f"{self.user} - {self.course}"
 
     class Meta:
         unique_together = ('step', 'user')
-        verbose_name = ' Step Progress'
+        verbose_name = 'Step Progress'
         verbose_name_plural = 'Step Progresses'

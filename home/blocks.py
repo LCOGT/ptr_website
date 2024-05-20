@@ -11,8 +11,13 @@ class ImageText(StructBlock):
     caption = blocks.BooleanBlock(required=False)
     third = blocks.BooleanBlock(help_text="1:2 split? Default is 1:1", required=False)
 
+class YouTubeBlock(StructBlock):
+    video_id = blocks.CharBlock()
+    caption = blocks.CharBlock(required=False)
+
 class BodyBlock(StreamBlock):
     richtext = blocks.RichTextBlock()
     htmltext = blocks.RawHTMLBlock()
-    # table =  TableBlock(template="home/partials/table_template.html")
+    table =  TableBlock(template="partials/table_template.html")
     imagetext = ImageText()
+    youtube = YouTubeBlock(template="partials/youtube_template.html")

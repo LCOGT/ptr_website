@@ -1,1 +1,36 @@
 {% extends 'learn/lesson.html' %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+{% include 'partials/stream_blocks.html' with blocks=page.content %}
+
+<nav class="level">
+    {% if prev %}
+    <div class="level-left">
+    <p class="level-item">
+      <a class="link" href="{% pageurl prev %}">{{prev}}</a>&nbsp;:Previous lesson
+    </p>
+    </div>
+    {% endif %}
+
+    {% if next and not nextlesson and not coursecomplete %}
+    <div class="level-right">
+    <p class="level-item">
+        Next lesson:&nbsp;
+      <a class="link" href="{% pageurl next %}">{{next}}</a>
+    </p>
+    </div>
+    {% endif %}
+  </nav>
+  {% if nextlesson %}
+  <p>Start the next lesson: <br/>
+      <a class="link" href="{% pageurl next %}">{{next}}</a>
+  </p>
+{% endif %}
+{% if coursecomplete %}
+<p>Return to 
+    <a class="link" href="{% slugurl 'learn' %}">home page</a>
+</p>
+{% endif %}
+
+{% endblock %}

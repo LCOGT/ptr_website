@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "wagtail.search",
     "wagtail.admin",
     "wagtail",
+    'wagtail.contrib.table_block',
     "modelcluster",
     "taggit",
     "django.contrib.admin",

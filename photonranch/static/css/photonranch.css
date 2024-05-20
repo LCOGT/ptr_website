@@ -24,6 +24,7 @@ nav {
 
 nav.navbar{
     min-height:2rem;
+    background-color:#13181D;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -31,6 +32,10 @@ h1, h2, h3, h4, h5, h6 {
   text-transform: uppercase;
   color: #fcfcfc;
   padding-bottom:0.5em;
+}
+
+.content {
+    color: #fcfcfc;
 }
 
 h1 {
@@ -68,10 +73,10 @@ section.highlight {
 
 nav {
     background-color: #13181D;
+}
 
-    .navbar{
-        min-height:2rem;
-    }
+nav.navbar{
+    min-height:2rem;
 }
 
 .red {
@@ -98,12 +103,24 @@ nav {
 
 .green-bg{
     background-color: #A6CE39;
-    color: #fcfcfc
+    color: #fcfcfc;
 }
 
 .grey-bg{
     background-color: #262e35;
     color: #fcfcfc
+}
+
+nav.breadcrumb {
+    background-color: none;
+}
+
+.breadcrumb li.is-active a {
+    color: #fcfcfc;
+}
+
+.breadcrumb li a:hover {
+    color: #00ADEF;
 }
 
 /* Highlight boxes */
@@ -173,12 +190,21 @@ h1.title-nav {
     --bulma-breadcrumb-item-separator-color: #fcfcfc;
 }
 
+.footer {
+    background-color:#13181D;
+}
+
+.card {
+--bulma-card-background-color: #3b4249;
+}
+
 .footer ul li {
     display: inline-block;
     border: 1px;
     border-left:1px solid black;
     line-height: 0.8em;
     padding: 0 26px;}
+
  .footer ul li:first-child{
      border:none;}
 

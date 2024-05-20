@@ -51,13 +51,15 @@ class Course(Page):
         FieldPanel('teaser'),
         FieldPanel('content'),
         FieldPanel('category', widget=forms.CheckboxSelectMultiple),
-        InlinePanel('course_plan', label="Course Plan"),
+        InlinePanel('course_plan', label="Course Lessons"),
     ]
 
     def get_context(self, request):
         # Update context to include only published posts, ordered by reverse-chron
         context = super().get_context(request)
         context['lessons'] = self.course_plan.all()
+        if request.user.is_authenticated:
+            context['enrolled'] = Course.objects.filter(courseenrollment__user=request.user).exists()
         return context
     
 
@@ -76,6 +78,7 @@ class Lesson(Page):
     content_panels = Page.content_panels + [
         FieldPanel('content'),
         PageChooserPanel('depends_on', 'learn.Lesson'),
+        InlinePanel('lesson_plan', label="Steps"),
     ]
     search_fields = Page.search_fields + [
         index.SearchField('content'),
@@ -87,15 +90,7 @@ class Lesson(Page):
         context['steps'] = Step.objects.live().descendant_of(self)
         context['course_title'] = self.get_parent().title
         return context
-    
 
-class CoursePlan(Orderable):
-    page = ParentalKey(Course, on_delete=models.CASCADE, related_name='course_plan')
-    lesson = models.ForeignKey('learn.Lesson', on_delete=models.CASCADE)
-
-    panels = [
-        FieldPanel('lesson'),
-    ]
 
 class Step(Page):
     parent_page_types = ['learn.Lesson']
@@ -111,8 +106,35 @@ class Step(Page):
     def get_context(self, request):
         context = super().get_context(request)
         context['breadcrumbs'] = breadcrumbs(self)
+        context['course_title'] = self.get_parent().get_parent().title
+        context['prev'] = self.get_prev_sibling()
+        context['next'] = self.get_next_sibling()
+        if not self.get_next_sibling():
+            if next := self.get_parent().get_next_sibling():
+                context['next'] = next
+                context['nextlesson'] = True
+            else:
+                context['next'] = self.get_parent().get_parent()
+                context['coursecomplete'] = True
         return context
-    
+
+
+class CoursePlan(Orderable):
+    course = ParentalKey(Course, on_delete=models.CASCADE, related_name='course_plan')
+    lesson = models.ForeignKey('learn.Lesson', on_delete=models.CASCADE)
+
+    panels = [
+        FieldPanel('lesson'),
+    ]
+
+class LessonPlan(Orderable):
+    lesson = ParentalKey(Lesson, on_delete=models.CASCADE, related_name='lesson_plan')
+    step = models.ForeignKey('learn.Step', on_delete=models.CASCADE)
+
+    panels = [
+        FieldPanel('step'),
+    ]
+
 def breadcrumbs(page):
     breadcrumbs = []
     

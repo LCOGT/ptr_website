@@ -34,6 +34,9 @@
             <div class="card-content">
                 <h2>{{course.title}}</h2>
                 <p>{{course.teaser}}</p>
+                {% if enrolled %}
+                <p class="green">You are enrolled on this course</p>
+                {% endif %}
                 <a href="{% pageurl course %}" class="button">View Course</a>
             </div>
         {% endfor %}

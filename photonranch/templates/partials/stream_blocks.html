@@ -6,8 +6,8 @@
     {{ block.value|richtext }}
   </div>
   {% elif block.block_type == 'imagetext' %}
-    {% include 'home/partials/image_text.html' with block=block only %}
-  {% elif block.block_type == 'table' %}
+    {% include 'partials/image_text.html' with block=block only %}
+  {% elif block.block_type == 'table' or block.block_type == 'youtube' %}
     {% include_block block %}
   {% elif block.block_type == 'htmltext'%}
     {{ block.value|betterhtml}}
