@@ -28,13 +28,20 @@
 {% include 'partials/stream_blocks.html' with blocks=page.content %}
 
 <div class="content">
-    {% if steps %}
-    {% if request.user|pre_requisite:page %}
-    <h3>Start this lesson</h3>
-    {% else %}
-    <div class="notification is-warning">
-        Complete the pre-requisite lesson to start this lesson: <a href="{% pageurl page.depends_on %}">{{page.depends_on}}</a>
-    </div>
+    {% if request.user.is_authenticated %}
+        {% if enrolled %}
+        {% if steps %}
+            <p>This lesson is {% progress request.user page %} % complete</p>
+        {% if request.user|pre_requisite:page %}
+        <h3>Start this lesson</h3>
+        {% else %}
+        <div class="notification is-warning">
+            Complete the pre-requisite lesson to start this lesson: <a href="{% pageurl page.depends_on %}">{{page.depends_on}}</a>
+        </div>
+        {% endif %}
+        {% else %}
+        <a href="{% url 'enrol' %}?course_id={{page.course.id}}">Enroll on this course</a>
+        {% endif %}
     {% endif %}
 
 <div class="columns is-multiline">

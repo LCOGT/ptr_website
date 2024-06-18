@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+
+{% block content %}
+<h1>Photon Ranch Account</h1>
+<p class="title">{% trans "Log in with your Photon Ranch or Las Cumbres Observatory account" %}</p>
+<p>{% trans "Want to join Photon Ranch?" %} <a href="">{% trans "Register for an account!" %}</a>
+</p>
+{% for m in messages %}
+<p class="bg-warning">{{m|safe}}</p>
+{% endfor %}
+
+<div class="card">
+  <div class="card-content">
+    <div class="content">
+      {% for error in form.non_field_errors%}
+                    <div class="notification is-danger">
+                         {{ error|escape }}
+                    </div>
+      {% endfor %}
+      <form action="" method="post" id="loginForm">
+        {% csrf_token %}
+
+        <div class="field">
+          <label class="label">Username</label>
+          <div class="control has-icons-left has-icons-right">
+            <input class="input" type="text" name="username" id="username">
+            <span class="icon is-small is-left">
+              <i class="fas fa-user"></i>
+            </span>
+          </div>
+          <p class="help is-failure">{{form.username.errors.as_text}}</p>
+        </div>
+
+        <div class="field">
+          <label class="label">Password</label>
+          <div class="control has-icons-left has-icons-right">
+            <input type="password" name="password" value="" id="password" class="input">
+            <span class="icon is-small is-left">
+                <i class="fa-sharp fa-solid fa-key"></i>
+            </span>
+          </div>
+          <div class="is-failure">{{form.password.errors.as_text}}</div>
+        </div>
+
+        <input type="hidden" name="next" value="{{ next }}">
+        <div class="field is-grouped">
+          <div class="control">
+            <input type="submit" id="login-btn" class="button is-link" value="Log me in">
+          </div>
+          <div class="control">
+            <button class="button is-link is-light">Cancel</button>
+          </div>
+        </div>
+        <p class="small">By logging in, you agree to <a href="https://lco.global/observatory/termsofservice/" target="_blank">the Las Cumbres Observatory terms of use</a>.</p>
+  
+      </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

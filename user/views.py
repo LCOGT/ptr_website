@@ -1,32 +1,19 @@
-from django import forms
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib import messages
+from django.views.generic.edit import UpdateView
 from django.views import View
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render
 
-from learn.models import Course, Lesson, Step
-from user.models import CourseEnrollment, LessonProgress, StepProgress
+from user.models import StepProgress
+from user.forms import EnrolForm, LoginForm
 
-class EnrolForm(forms.Form):
-    course_id = forms.IntegerField(widget=forms.HiddenInput)
 
-    def clean_course_id(self):
-        course_id = self.cleaned_data['course_id']
-        try:
-            course = Course.objects.get(id=course_id)
-        except Course.DoesNotExist:
-            raise forms.ValidationError("Invalid course ID")
-        return course_id
-
-    def enrol(self, user):
-        course = Course.objects.get(id=self.cleaned_data['course_id'])
-        # create enrollement records for course, lessons and steps
-        ce, created = CourseEnrollment.objects.get_or_create(course=course, user=user)
-        for lesson in Lesson.objects.filter(courseplan__course=course):
-            lp, created = LessonProgress.objects.get_or_create(lesson=lesson, user=user)
-            for step in Step.objects.filter(lessonplan__lesson=lesson):
-                sp, created = StepProgress.objects.get_or_create(step=step, user=user)
-        return course
+def logout_view(request):
+    logout(request)
+    messages.success(request, "You have been logged out.")
+    return redirect('/')
 
 class Enrol(View):
     form_class = EnrolForm
@@ -34,6 +21,39 @@ class Enrol(View):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            course = form.enrol(request.user)
-            messages.success(request, f"You have been enrolled on to {course.title}.")
+            course, created = form.enrol(request.user)
+            if created:
+                messages.success(request, f"You have been enrolled on to {course.title}.")
+            else:
+                messages.warning(request, f"You are already enrolled on to {course.title}.")
             return redirect(reverse('learn:course', args=[course.slug]))
+
+
+class CompleteStep(UpdateView):
+    model = StepProgress
+    fields = ["complete"]
+    template_name_suffix = "_update_form"
+
+
+class Login(View):
+    template_name = 'user/login.html'
+    form_class = LoginForm
+    
+    def get(self, request):
+        form = self.form_class()
+        message = ''
+        return render(request, self.template_name, context={'form': form, 'message': message})
+        
+    def post(self, request):
+        form = self.form_class(request.POST)
+        next = request.GET.get('next', '/')
+        if form.is_valid():
+            user = authenticate(
+                username=form.cleaned_data['username'],
+                password=form.cleaned_data['password'],
+            )
+            if user is not None:
+                login(request, user)
+                return redirect(next)
+        message = 'Login failed!'
+        return render(request, self.template_name, context={'form': form, 'message': message})

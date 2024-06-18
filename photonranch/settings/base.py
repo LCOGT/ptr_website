@@ -113,6 +113,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'photonranch.auth_backend.PortalBackend',
+    # 'photonranch.auth_backend.DjangoBackend',
+)
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -177,3 +182,11 @@ WAGTAILSEARCH_BACKENDS = {
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
 WAGTAILADMIN_BASE_URL = "http://example.com"
+
+# LCO specific settings
+PORTAL_API_URL     = 'https://observe.lco.global/api/'
+PORTAL_REQUEST_API = PORTAL_API_URL + 'requests/'
+PORTAL_REQUESTGROUP_API = PORTAL_API_URL + 'requestgroups/'
+PORTAL_VALIDATE_API = PORTAL_REQUESTGROUP_API + 'validate/'
+PORTAL_TOKEN_URL   = PORTAL_API_URL + 'api-token-auth/'
+PORTAL_PROFILE_URL = PORTAL_API_URL + 'profile/'

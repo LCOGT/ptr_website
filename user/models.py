@@ -6,10 +6,36 @@ from learn.models import Course, Lesson, Step
 class Badge(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    image = models.ImageField(upload_to='badges/')
+    image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Badge image",
+    )
 
     def __str__(self):
         return self.name
+
+class BadgeRequirement(models.Model):
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
+    lesson = models.ManyToManyField(Lesson)
+    message = models.TextField()
+
+    def __str__(self):
+        return f"{self.badge} requirements"
+
+class Award(models.Model):
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    awarded = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.badge}"
+
+    class Meta:
+        unique_together = ('badge', 'user')
     
 class CourseEnrollment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -22,9 +48,6 @@ class CourseEnrollment(models.Model):
 
     class Meta:
         unique_together = ('course', 'user')
-        verbose_name = ' Course Enrollment'
-        verbose_name_plural = 'Course Enrollments'
-
 
 class LessonProgress(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
@@ -33,11 +56,11 @@ class LessonProgress(models.Model):
     last_update = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.user} - {self.course}"
+        return f"{self.user} - {self.lesson}"
 
     class Meta:
         unique_together = ('lesson', 'user')
-        verbose_name = ' Lesson Progress'
+        verbose_name = 'Lesson Progress'
         verbose_name_plural = 'Lesson Progresses'
 
 
@@ -49,7 +72,7 @@ class StepProgress(models.Model):
     task_info = models.TextField(blank=True) 
 
     def __str__(self):
-        return f"{self.user} - {self.course}"
+        return f"{self.user} - {self.step}"
 
     class Meta:
         unique_together = ('step', 'user')

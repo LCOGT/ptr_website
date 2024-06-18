@@ -19,8 +19,15 @@
 <h2>Lessons</h2>
 <p>These are the lessons available to you. Some parts may be disabled until you have completed the requirements.</p>
 
+{% if request.user.is_authenticated %}
 {% if enrolled %}
 <p class="green">You are enrolled on this course</p>
+{% else %}
+<form action={% url 'enrol' %} method="push">
+    <input type="hidden" name="course_id" value="{{page.id}}">
+    <button type="submit" class="button is-primary">Enroll on this course</button>
+</form>
+{% endif %}
 {% endif %}
 
 <div class="columns is-multiline">
@@ -38,7 +45,9 @@
             <figcaption class="img-overlay">{{lesson.lesson.title}}</figcaption>
             </div>
             </a>
+            {% if request.user.is_authenticated %}
             <p>Can access ? {{request.user|pre_requisite:lesson.lesson}}</p>
+            {% endif  %}
         </div>
     </div>
 {% endfor %}

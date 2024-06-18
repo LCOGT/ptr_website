@@ -89,6 +89,8 @@ class Lesson(Page):
         context['breadcrumbs'] = breadcrumbs(self)
         context['steps'] = Step.objects.live().descendant_of(self)
         context['course_title'] = self.get_parent().title
+        if request.user.is_authenticated:
+            context['enrolled'] = Course.objects.filter(courseenrollment__user=request.user).exists()
         return context
 
 
@@ -109,6 +111,7 @@ class Step(Page):
         context['course_title'] = self.get_parent().get_parent().title
         context['prev'] = self.get_prev_sibling()
         context['next'] = self.get_next_sibling()
+        context['completed'] = self.stepprogress_set.filter(user=request.user).exists()
         if not self.get_next_sibling():
             if next := self.get_parent().get_next_sibling():
                 context['next'] = next
