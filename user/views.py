@@ -26,7 +26,7 @@ class Enrol(View):
                 messages.success(request, f"You have been enrolled on to {course.title}.")
             else:
                 messages.warning(request, f"You are already enrolled on to {course.title}.")
-            return redirect(reverse('learn:course', args=[course.slug]))
+            return redirect(course.slug)
 
 
 class CompleteStep(UpdateView):
@@ -57,3 +57,6 @@ class Login(View):
                 return redirect(next)
         message = 'Login failed!'
         return render(request, self.template_name, context={'form': form, 'message': message})
+    
+def user_progress(request):
+    return render(request, 'user/progress.html', context={'steps': StepProgress.objects.filter(user=request.user)})

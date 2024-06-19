@@ -20,6 +20,7 @@ class DjangoBackend(object):
     """
 
     def authenticate(self, request, username=None, password=None):
+        print("here")
         return dj_authenticate(request, username=username, password=password)
 
     def get_user(self, user_id):

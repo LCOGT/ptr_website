@@ -2,7 +2,14 @@
 {% load wagtailcore_tags %}
 
 {% block content %}
+
+{% if request.user.is_authenticated %}
 {% include 'partials/stream_blocks.html' with blocks=page.content %}
+{% else %}
+<p class="notification is-warning">
+    You must be logged in to view this lesson. 
+    <a href="{% url 'login' %}">Login</a> 
+{% endif %}
 
 <nav class="level">
     {% if prev %}

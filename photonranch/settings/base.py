@@ -114,8 +114,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
     'photonranch.auth_backend.PortalBackend',
-    # 'photonranch.auth_backend.DjangoBackend',
 )
 
 
@@ -181,7 +181,7 @@ WAGTAILSEARCH_BACKENDS = {
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
-WAGTAILADMIN_BASE_URL = "http://example.com"
+WAGTAILADMIN_BASE_URL = "http://photonranch.lco.earth"
 
 # LCO specific settings
 PORTAL_API_URL     = 'https://observe.lco.global/api/'

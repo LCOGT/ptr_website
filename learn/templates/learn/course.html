@@ -23,7 +23,8 @@
 {% if enrolled %}
 <p class="green">You are enrolled on this course</p>
 {% else %}
-<form action={% url 'enrol' %} method="push">
+<form action={% url 'enrol' %} method="post">
+    {% csrf_token %}
     <input type="hidden" name="course_id" value="{{page.id}}">
     <button type="submit" class="button is-primary">Enroll on this course</button>
 </form>
@@ -32,24 +33,29 @@
 
 <div class="columns is-multiline">
 {% for lesson in lessons %}
+    {% if request.user.is_authenticated %}
+    {% with prereq=request.user|pre_requisite:lesson.lesson %}</p>
     <div class="column is-one-quarter">
         <div class="card">
+            {% if prereq %}
             <a href="{% pageurl lesson.lesson %}">
+            {% endif %}
             <div class="card-image">
             <figure class="image is-4by3">
                 <img
-                src="https://placehold.co/400x300?text=Course\nImage"
+                src="https://placehold.co/400x300?text={% if not prereq %}Locked{% else %}Course\nImage{% endif %}"
                 alt="Placeholder image"
                 />
             </figure>
             <figcaption class="img-overlay">{{lesson.lesson.title}}</figcaption>
             </div>
+            {% if prereq %}
             </a>
-            {% if request.user.is_authenticated %}
-            <p>Can access ? {{request.user|pre_requisite:lesson.lesson}}</p>
-            {% endif  %}
+            {% endif %}
         </div>
     </div>
+    {% endwith %}
+    {% endif  %}
 {% endfor %}
 </div>
 {% endblock %}
