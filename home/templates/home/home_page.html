@@ -9,20 +9,13 @@ Learn @ Photon Ranch
 {% endblock %}
 
 {% block meta_title %}Home{% endblock %}
-{% block meta_description %}{{object.teaser}}{% endblock %}
+{% block meta_description %}{{page.summary}}{% endblock %}
 
 {% block body_class %}home{% endblock %}
 
 {% block header_script %}
 {% endblock%}
 
-{% block unfurl %}
-<meta property="og:url" content="{{ object.get_site.root_url }}" />
-<meta property="og:title" content="Las Cumbres Observatory" />
-<meta property="og:description" content="{{object.teaser}}" />
-<meta name="twitter:site" content="@LCO_global" />
-
-{% endblock %}
 
 {% block breadcrumbs%}{% endblock %}
 

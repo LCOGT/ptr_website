@@ -4,3 +4,5 @@ __pycache__/
 photonranch/settings/dev.py
 
 docker-compose.yml
+/static/
+/data/

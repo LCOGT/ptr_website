@@ -6,7 +6,7 @@ COPY requirements.txt /app/requirements.txt
 RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
     build-essential \
     libpq-dev \
-    libmariadbclient-dev \
+    postgresql-11 \
     libjpeg62-turbo-dev \
     zlib1g-dev \
     libwebp-dev \

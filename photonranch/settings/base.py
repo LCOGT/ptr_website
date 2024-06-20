@@ -190,3 +190,36 @@ PORTAL_REQUESTGROUP_API = PORTAL_API_URL + 'requestgroups/'
 PORTAL_VALIDATE_API = PORTAL_REQUESTGROUP_API + 'validate/'
 PORTAL_TOKEN_URL   = PORTAL_API_URL + 'api-token-auth/'
 PORTAL_PROFILE_URL = PORTAL_API_URL + 'profile/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'mysite.log',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers':['file'],
+            'propagate': True,
+            'level':'ERROR',
+        },
+        'MYAPP': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+        },
+    }
+}
