@@ -6,3 +6,5 @@ photonranch/settings/dev.py
 docker-compose.yml
 /static/
 /data/
+/media/
+*.json
