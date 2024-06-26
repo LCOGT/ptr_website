@@ -3,41 +3,93 @@
 
 {% block content %}
 
+<!-- User cannot see steps unless they are logged in -->
+
 {% if request.user.is_authenticated %}
-{% include 'partials/stream_blocks.html' with blocks=page.content %}
+  {% if enrolled %}
+  <p class="notification green-bg">You are enrolled on this course - 
+    {% if completed %}
+    <strong>Step complete!</strong>
+    {% else %}
+    <strong>Follow the instructions to continue</strong>
+    {% endif %}
+  </p>
+  {% else %}
+  <form action={% url 'enrol' %} method="post">
+      {% csrf_token %}
+      <input type="hidden" name="course_id" value="{{course.id}}">
+      <button type="submit" class="button is-primary">Enroll on this course</button>
+  </form>
+  {% endif %}
+  {% include 'partials/stream_blocks.html' with blocks=page.content %}
 {% else %}
 <p class="notification is-warning">
     You must be logged in to view this lesson. 
     <a href="{% url 'login' %}">Login</a> 
 {% endif %}
 
-<nav class="level">
-    {% if prev %}
-    <div class="level-left">
-    <p class="level-item">
-      <a class="link" href="{% pageurl prev %}">{{prev}}</a>&nbsp;:Previous lesson
-    </p>
-    </div>
-    {% endif %}
 
+<!-- Navigation through structure -->
+
+<div class="pagination" role="navigation" aria-label="pagination">
+  <div class="left">
+  {% if prev %}
+  <a href="{{ nexturl }}">
+  <span class="icon-text has-text-info">
+    <span class="icon">
+      <i class="fa-solid fa-circle-arrow-left fa-xl"></i>
+    </span>
+    <span class="pag-title">Previous</span><br/>
+    <span class="pag-subtitle">{{prev}}</span>
+  </span>
+</a>
+    {% endif %}
+</div>
+
+<div class="right">
     {% if next and not nextlesson and not coursecomplete %}
-    <div class="level-right">
-    <p class="level-item">
-        Next lesson:&nbsp;
-      <a class="link" href="{% pageurl next %}">{{next}}</a>
-    </p>
-    </div>
-    {% endif %}
-  </nav>
-  {% if nextlesson %}
-  <p>Start the next lesson: <br/>
-      <a class="link" href="{% pageurl next %}">{{next}}</a>
-  </p>
-{% endif %}
-{% if coursecomplete %}
-<p>Return to 
-    <a class="link" href="{% slugurl 'learn' %}">home page</a>
-</p>
-{% endif %}
+    <a href="{{ nexturl }}">
+      <span class="icon-text has-text-info">
 
+        <span class="pag-title">Next</span>
+        <span class="icon">
+          <i class="fa-solid fa-circle-arrow-right fa-xl"></i>
+        </span><br/>
+        <span class="pag-subtitle">{{next}}</span>
+      </span>
+    </a>
+    {% endif %}
+
+    {% if nextlesson %}
+    <a href="{{ nexturl }}">
+    <div class="pag-title">Next lesson</div>
+    <div class="card">
+      <div class="card-image">
+      <figure class="image is-4by3">
+          <img
+          src="https://placehold.co/400x300?text=Lesson\nImage"
+          alt="Placeholder image"
+          />
+      </figure>
+      <figcaption class="img-overlay">{{next.title}}</figcaption>
+      </div>
+    </div>  
+  </a>
+  {% endif %}
+
+
+{% if coursecomplete %}
+<a href="{{ nexturl }}">
+  <span class="icon-text has-text-info">
+
+    <span class="pag-title">Continue</span>
+    <span class="icon">
+      <i class="fa-solid fa-medal fa-xl"></i>
+    </span><br/>
+    <span class="pag-subtitle">Learn home page</span>
+  </span>
+</a>
+{% endif %}
+</div>
+</div>
 {% endblock %}

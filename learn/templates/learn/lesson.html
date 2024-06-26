@@ -8,7 +8,7 @@
 {% block meta_title %}{{page.title}}{% endblock %}
 {% block meta_description %}{{object.teaser}}{% endblock %}
 
-{% block alttitle %}{{course_title}}{% endblock %}
+{% block alttitle %}{{course.title}}{% endblock %}
 
 {% block breadcrumbs%}
 
@@ -28,28 +28,33 @@
 {% include 'partials/stream_blocks.html' with blocks=page.content %}
 
 <div class="content">
-    {% if request.user.is_authenticated %}
-        {% if enrolled %}
+{% if request.user.is_authenticated %}
+    {% if enrolled %}
         {% if steps %}
-            <p>This lesson is {% progress request.user page %} % complete</p>
-        {% if request.user|pre_requisite:page %}
-        <h3>Start this lesson</h3>
+            <p>Your progress in this lesson:</p>
+            <progress class="progress is-primary" value="{% progress request.user page %}" max="100">
+                {% progress request.user page %}%
+              </progress>
+            {% if request.user|pre_requisite:page %}
+            <h3>Start this lesson</h3>
+            {% else %}
+            <div class="notification is-warning">
+                Complete the pre-requisite lesson to start this lesson: <a href="{% pageurl page.depends_on %}">{{page.depends_on}}</a>
+            </div>
+            {% endif %}
+            {% endif %}
         {% else %}
-        <div class="notification is-warning">
-            Complete the pre-requisite lesson to start this lesson: <a href="{% pageurl page.depends_on %}">{{page.depends_on}}</a>
-        </div>
-        {% endif %}
-        {% else %}
-        <a href="{% url 'enrol' %}?course_id={{page.course.id}}">Enroll on this course</a>
+        <a href="{% url 'enrol' %}?course_id={{course.id}}">Enroll on this course</a>
         {% endif %}
     {% endif %}
 
-<div class="columns is-multiline">
-    {% for step in steps %}
+    {% if steps %}
+        <div class="columns is-multiline">
+        {% for lessonplan in steps %}
         <div class="column is-one-quarter">
             <div class="card">
                 {% if request.user|pre_requisite:page %}
-                <a href="{% pageurl step %}">
+                <a href="{% pageurl lessonplan.step %}">
                     <div class="card-image">
                     <figure class="image is-4by3">
                         <img
@@ -57,7 +62,7 @@
                         alt="Placeholder image"
                         />
                     </figure>
-                    <figcaption class="img-overlay">{{step.title}}</figcaption>
+                    <figcaption class="img-overlay">{{lessonplan.step.title}}</figcaption>
                     </div>
                 </a>
                 {% else %}
@@ -68,12 +73,12 @@
                         alt="Placeholder image"
                         />
                     </figure>
-                    <figcaption class="img-overlay red">{{step.title}}</figcaption>
+                    <figcaption class="img-overlay red">{{lessonplan.step.title}}</figcaption>
                     </div>
                 {% endif %}
             </div>
         </div>
-    {% endfor %}
+        {% endfor %}
     {% else %}
     <div class="notification is-warning">
         No steps have been added to this lesson yet

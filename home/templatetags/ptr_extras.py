@@ -34,3 +34,7 @@ def progress(user, lesson):
 
     except LessonProgress.DoesNotExist:
         return False
+    
+@register.simple_tag
+def has_requisites(user, step):
+    return StepProgress.objects.filter(step=step, user=user)

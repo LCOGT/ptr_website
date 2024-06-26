@@ -1,5 +1,8 @@
 from django.db import models
 from django import forms
+from django.db.models import Subquery, OuterRef
+from django.apps import apps
+from django.urls import reverse
 
 from wagtail.models import Page, Orderable
 from wagtail.fields import StreamField
@@ -8,7 +11,6 @@ from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from wagtail.search import index
 
 from home.blocks import BodyBlock
-
 
 class LearnIndexPage(Page):
     content = StreamField(BodyBlock)
@@ -85,10 +87,13 @@ class Lesson(Page):
     ]
 
     def get_context(self, request):
+        stepprogress = apps.get_model('user', 'StepProgress')
+        stepsprog = stepprogress.objects.filter(step=OuterRef('pk'), user=request.user)
+        steps = self.lesson_plan.all().annotate(progress=Subquery(stepsprog.values('completed')[:1]))
         context = super().get_context(request)
         context['breadcrumbs'] = breadcrumbs(self)
-        context['steps'] = Step.objects.live().descendant_of(self)
-        context['course_title'] = self.get_parent().title
+        context['steps'] = steps
+        context['course'] = self.get_parent()
         if request.user.is_authenticated:
             context['enrolled'] = Course.objects.filter(courseenrollment__user=request.user).exists()
         return context
@@ -108,10 +113,8 @@ class Step(Page):
     def get_context(self, request):
         context = super().get_context(request)
         context['breadcrumbs'] = breadcrumbs(self)
-        context['course_title'] = self.get_parent().get_parent().title
-        context['prev'] = self.get_prev_sibling()
-        context['next'] = self.get_next_sibling()
-        context['completed'] = self.stepprogress_set.filter(user=request.user).exists()
+        context['course'] = self.get_parent().get_parent()
+        context['prev'], context['next'] = find_siblings(step=self)
         if not self.get_next_sibling():
             if next := self.get_parent().get_next_sibling():
                 context['next'] = next
@@ -119,6 +122,14 @@ class Step(Page):
             else:
                 context['next'] = self.get_parent().get_parent()
                 context['coursecomplete'] = True
+        if request.user.is_authenticated:
+            context['enrolled'] = Course.objects.filter(courseenrollment__user=request.user).exists()
+            if context['enrolled']:
+                context['nexturl'] = reverse('update_progress', args=[self.id])
+            else:
+                context['nexturl'] = context['next'].url
+            if self.stepprogress_set.filter(user=request.user).exists():
+                context['completed'] = self.stepprogress_set.get(user=request.user).completed
         return context
 
 
@@ -150,3 +161,25 @@ def breadcrumbs(page):
 
     breadcrumbs.reverse()
     return breadcrumbs
+
+def find_siblings(step):
+    lessonplan = list(step.get_parent().lesson.lesson_plan.all().values_list('step__pk', flat=True))
+    place = lessonplan.index(step.pk)
+    if place == 0 and len(lessonplan) > 1:
+        next = lessonplan[0]
+        prev = None
+    elif place == len(lessonplan) - 1:
+        next = None
+        prev = lessonplan[place - 1]
+    elif len(lessonplan) == 1:
+        next = None
+        prev = None
+    else:
+        next = lessonplan[place + 1]
+        prev = lessonplan[place - 1]
+    if next:
+        next = Step.objects.get(pk=next)
+    if prev:
+        prev = Step.objects.get(pk=prev)
+    return prev, next
+    

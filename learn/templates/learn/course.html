@@ -21,7 +21,7 @@
 
 {% if request.user.is_authenticated %}
 {% if enrolled %}
-<p class="green">You are enrolled on this course</p>
+<p class="notification green-bg">You are enrolled on this course</p>
 {% else %}
 <form action={% url 'enrol' %} method="post">
     {% csrf_token %}

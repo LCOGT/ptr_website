@@ -219,6 +219,38 @@ h1.title-nav {
     border-radius: 0 0 0.75rem 0.75rem;
 }
 
+/* Page navigation */
+.pag-item{
+    border:4px red solid;
+    flex-grow:0;
+    width:15%;
+  }
+  
+  .pagination{
+    display:flex;
+    flex-direction:row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .pagination > .left{
+    width:30%;
+    text-align:left;    
+  }
+  
+  .pagination > .right{
+    display:flex;
+    flex-direction:column;
+    text-align:right;
+    width:30%;
+  }
+
+  .pag-title {
+    font-family: 'Unica One', sans-serif;
+    text-transform: uppercase;
+    font-size: 2rem;
+  }
+
 /* Skip to content`*/
 
 .skip-to-content-link {

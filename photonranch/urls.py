@@ -8,6 +8,7 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from search import views as search_views
 from user.views import Enrol, Login, logout_view
+from learn.views import UpdateProgress
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
@@ -25,6 +26,7 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = urlpatterns + [
+    path("progress/<int:step_id>/update/", UpdateProgress.as_view(), name="update_progress"),
     path("enrol/", Enrol.as_view(), name="enrol"),
     path("account/login/", Login.as_view(), name="login"),
     path("account/logout/", logout_view, name="logout"),
