@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import authenticate as dj_authenticate
 from django.contrib.auth import get_user_model
+from rest_framework.authtoken.models import Token
+
 import requests
 import logging
 
@@ -20,7 +22,6 @@ class DjangoBackend(object):
     """
 
     def authenticate(self, request, username=None, password=None):
-        print("here")
         return dj_authenticate(request, username=username, password=password)
 
     def get_user(self, user_id):
@@ -54,7 +55,13 @@ def lco_authenticate(request, username, password):
             # Create a new user. There's no need to set a password
             # because Observation Portal auth will always be used.
             user = User(username=username)
-        user.token = token
+        try:
+            drftoken = Token.objects.get(user=user)
+            if drftoken.key != token:
+                drftoken.delete()
+                set_token(user, token)
+        except Token.DoesNotExist:
+            set_token(user, token)
         user.default_proposal = profile[2]
         user.email = profile[3]
         user.save()
@@ -121,3 +128,8 @@ def check_proposal_membership(proposals):
     else:
         return False
     '''
+
+def set_token(user, token):
+    drftoken = Token(user=user, key=token)
+    drftoken.save()
+    return

@@ -5,7 +5,14 @@ from django.views.generic.edit import UpdateView
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework import permissions, authentication
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from user.serializers import UserSerializer
 from user.models import StepProgress
 from user.forms import EnrolForm, LoginForm
 
@@ -57,6 +64,20 @@ class Login(View):
                 return redirect(next)
         message = 'Login failed!'
         return render(request, self.template_name, context={'form': form, 'message': message})
-    
+
+
+class UserProfileApi(APIView):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    def get(self, request):
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
 def user_progress(request):
     return render(request, 'user/progress.html', context={'steps': StepProgress.objects.filter(user=request.user)})
+

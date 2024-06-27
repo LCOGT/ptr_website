@@ -5,10 +5,14 @@ from django.contrib import admin
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
+from rest_framework import routers
 
 from search import views as search_views
-from user.views import Enrol, Login, logout_view
+from user.views import Enrol, Login, logout_view, UserProfileApi
 from learn.views import UpdateProgress
+
+# router = routers.DefaultRouter()
+# router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
@@ -30,5 +34,6 @@ urlpatterns = urlpatterns + [
     path("enrol/", Enrol.as_view(), name="enrol"),
     path("account/login/", Login.as_view(), name="login"),
     path("account/logout/", logout_view, name="logout"),
+    path("api/user/profile/", UserProfileApi.as_view()),
     path("", include(wagtail_urls)),
 ]

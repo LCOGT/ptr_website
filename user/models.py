@@ -4,6 +4,7 @@ from django.db import models
 from learn.models import Course, Lesson, Step
 
 class Badge(models.Model):
+    code = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=100)
     description = models.TextField()
     image = models.ForeignKey(
