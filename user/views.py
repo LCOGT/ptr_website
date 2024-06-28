@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from user.serializers import UserSerializer
-from user.models import StepProgress
+from user.models import StepProgress, LessonProgress, CourseEnrollment
 from user.forms import EnrolForm, LoginForm
 
 
@@ -73,11 +73,12 @@ class UserProfileApi(APIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication]
+
     def get(self, request):
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
 def user_progress(request):
-    return render(request, 'user/progress.html', context={'steps': StepProgress.objects.filter(user=request.user)})
+    return render(request, 'user/admin_progress.html', context={'courses': CourseEnrollment.objects.all()})
 

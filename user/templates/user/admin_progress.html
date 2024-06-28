@@ -1,5 +1,5 @@
 {% extends "wagtailadmin/base.html" %}
-{% block titletag %}{{ current_year }} calendar{% endblock %}
+{% block titletag %}User progress{% endblock %}
 
 {% block extra_css %}
     {{ block.super }}
@@ -14,9 +14,22 @@
 {% endblock %}
 
 {% block content %}
-    {% include "wagtailadmin/shared/header.html" with title="Calendar" icon="date" %}
+    {% include "wagtailadmin/shared/header.html" with title="User Progress" icon="group" %}
 
     <div class="nice-padding">
-        {{ calendar_html|safe }}
+
+        <table class="listing">
+            <tr>
+                <th>User</th>
+                <th>Course</th>
+                <th>Enrolled</th>
+            </tr>
+            {% for s in steps %}
+            <tr>
+                <td>{{ s.user }}</td>
+                <td>{{ s.course }}</td>
+                <td>{{ s.completed }}</td>
+            </tr>
+            {% endfor %}
     </div>
 {% endblock %}
