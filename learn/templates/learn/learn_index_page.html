@@ -30,15 +30,36 @@
         {% include 'partials/stream_blocks.html' with blocks=page.content %}
 
         {% for course in courses %}
-        <div class="card">
-            <div class="card-content">
-                <h2>{{course.title}}</h2>
-                <p>{{course.teaser}}</p>
-                {% if enrolled %}
-                <p class="green">You are enrolled on this course</p>
+        <div class="highlight">
+            <div class="columns">
+                <div class="column">
+                    <div class="highlight-content">
+                        <div class="highlight-image">
+                            <figure class="image is-128x128">
+                                <img src="https://placehold.co/200x200?text=Course+Image" alt="Course Image">
+                            </figure>
+                        </div>
+                        <div class="highlight-text">
+                            <h2>{{course.course.title}}
+                            <span class="tag blue-bg white">Enrolled</span>
+                            </h2>
+                            <p>{{course.course.teaser}}</p>
+                            {% if course.enrolled %}
+                            <a href="{% url 'current_lesson' course.course.id %}" class="button">Continue</a>
+                            {% else %}
+                            <a href="{% pageurl course.course %}" class="button">View Course</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% if course.enrolled %}
+                <div class="column is-one-quarter">
+                    <p>Your progress</p>
+                    <progress class="progress green-bg" value="{{course.percent}}" max="100">{{course.percent}}%</progress>
+                </div>
                 {% endif %}
-                <a href="{% pageurl course %}" class="button">View Course</a>
             </div>
+        </div>
         {% endfor %}
     </div>
 </section>

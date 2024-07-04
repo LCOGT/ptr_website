@@ -21,7 +21,10 @@ class EnrolForm(forms.Form):
         if ce_created and not force:
             return course, ce_created
         for lesson in Lesson.objects.filter(courseplan__course=course):
-            lp, created = LessonProgress.objects.get_or_create(lesson=lesson, user=user)
+            lp, created = LessonProgress.objects.get_or_create(lesson=lesson, user=user, locked=locked)
+            if lesson.depends_on and created:
+                lp.locked = True
+                lp.save()
             for step in Step.objects.filter(lessonplan__lesson=lesson):
                 sp, created = StepProgress.objects.get_or_create(step=step, user=user)
         return course, ce_created

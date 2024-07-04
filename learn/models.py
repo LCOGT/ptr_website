@@ -22,7 +22,26 @@ class LearnIndexPage(Page):
     def get_context(self, request):
         # Update context to include only published posts, ordered by reverse-chron
         context = super().get_context(request)
-        course_list = Course.objects.live().order_by('-go_live_at')
+        lessonprogress = apps.get_model('user', 'LessonProgress')
+        courseenrollment = apps.get_model('user', 'CourseEnrollment')
+        courses = CoursePlan.objects.all()
+        course_list = []
+        if not request.user.is_authenticated:
+            # Ugly code so the template can handle the same data structure
+            # Better would be to annotate the queryset with the progress
+            for course in Course.objects.all():
+                data = {'complete': None, 'total': None, 'course': course, 'enrolled': None}
+                course_list.append(data)
+        else:
+            for course in Course.objects.all():
+                courseplan = courses.filter(course=course)
+                complete = lessonprogress.objects.filter(user=request.user, completed=True, lesson=Subquery(courseplan.values('lesson'))).count()
+                total = courseplan.count()
+                percent = f"{complete / total * 100:.0f}" if total > 0 else 0
+                enrolled = courseenrollment.objects.filter(user=request.user, course=course).exists()
+                data = {'complete': complete, 'total': total, 'course': course, 'enrolled': enrolled, 'percent': percent}
+                print(data)
+                course_list.append(data)
         context['courses'] = course_list
         return context
     
@@ -70,11 +89,11 @@ class Lesson(Page):
     subpage_types = ['learn.Step']
     content = StreamField(BodyBlock)
     depends_on =  models.ForeignKey(
-        'wagtailcore.Page',
+        'self',
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='+',
+        related_name='locks'
     )
 
     content_panels = Page.content_panels + [

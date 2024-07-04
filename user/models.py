@@ -55,6 +55,7 @@ class LessonProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
     last_update = models.DateTimeField(null=True, blank=True)
+    locked = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user} - {self.lesson}"

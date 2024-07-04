@@ -34,22 +34,22 @@
 <div class="columns is-multiline">
 {% for lesson in lessons %}
     {% if request.user.is_authenticated %}
-    {% with prereq=request.user|pre_requisite:lesson.lesson %}</p>
+    {% with locked=request.user|is_locked:lesson.lesson %}</p>
     <div class="column is-one-quarter">
         <div class="card">
-            {% if prereq %}
+            {% if not locked or request.user.is_staff %}
             <a href="{% pageurl lesson.lesson %}">
             {% endif %}
             <div class="card-image">
             <figure class="image is-4by3">
                 <img
-                src="https://placehold.co/400x300?text={% if not prereq %}Locked{% else %}Course\nImage{% endif %}"
+                src="https://placehold.co/400x300?text={% if locked %}Locked{% else %}Course\nImage{% endif %}"
                 alt="Placeholder image"
                 />
             </figure>
             <figcaption class="img-overlay">{{lesson.lesson.title}}</figcaption>
             </div>
-            {% if prereq %}
+            {% if not locked or request.user.is_staff  %}
             </a>
             {% endif %}
         </div>

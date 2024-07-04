@@ -20,6 +20,7 @@
                     </div>
       {% endfor %}
       <form action="" method="post" id="loginForm">
+        {{form.errors}}
         {% csrf_token %}
 
         <div class="field">

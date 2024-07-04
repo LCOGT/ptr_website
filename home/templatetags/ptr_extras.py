@@ -18,8 +18,11 @@ def is_enrolled(user, course):
     return user.is_authenticated and CourseEnrollment.objects.filter(course=course, user=user).exists()
 
 @register.filter
-def pre_requisite(user, lesson):
-    return lesson.depends_on is None or LessonProgress.objects.filter(lesson=lesson.depends_on, user=user, completed=True).exists()
+def is_locked(user, lesson):
+    try:
+        return lesson.lessonprogress_set.get(user=user).locked
+    except LessonProgress.DoesNotExist:
+        return False
 
 @register.simple_tag
 def progress(user, lesson):

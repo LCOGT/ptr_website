@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from user.serializers import UserSerializer
-from user.models import StepProgress, LessonProgress, CourseEnrollment
+from user.models import StepProgress, CourseEnrollment
 from user.forms import EnrolForm, LoginForm
 
 

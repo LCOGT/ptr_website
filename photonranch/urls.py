@@ -9,10 +9,8 @@ from rest_framework import routers
 
 from search import views as search_views
 from user.views import Enrol, Login, logout_view, UserProfileApi
-from learn.views import UpdateProgress
+from learn.views import UpdateProgress, CurrentLesson
 
-# router = routers.DefaultRouter()
-# router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
@@ -30,6 +28,7 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = urlpatterns + [
+    path("lesson/current/<int:course_id>/", CurrentLesson.as_view(), name="current_lesson"),
     path("progress/<int:step_id>/update/", UpdateProgress.as_view(), name="update_progress"),
     path("enrol/", Enrol.as_view(), name="enrol"),
     path("account/login/", Login.as_view(), name="login"),

@@ -218,6 +218,26 @@ h1.title-nav {
     right: 0;
     border-radius: 0 0 0.75rem 0.75rem;
 }
+/* Highlight */
+.highlight {
+    background-color: #3b4249;
+    padding: 1em;
+    margin: 1em 0;
+}
+
+.highlight-content {
+    display: flex;
+    flex-direction: row;
+}
+
+.highlight-content > div {
+    margin: 10px;
+    padding: 5px;
+}
+
+.highlight-text {
+    flex-grow: 1;
+}
 
 /* Page navigation */
 .pag-item{

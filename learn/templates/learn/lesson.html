@@ -28,6 +28,8 @@
 {% include 'partials/stream_blocks.html' with blocks=page.content %}
 
 <div class="content">
+{% with locked=request.user|is_locked:page %}</p>
+
 {% if request.user.is_authenticated %}
     {% if enrolled %}
         {% if steps %}
@@ -35,7 +37,7 @@
             <progress class="progress is-primary" value="{% progress request.user page %}" max="100">
                 {% progress request.user page %}%
               </progress>
-            {% if request.user|pre_requisite:page %}
+            {% if not locked or request.user.is_staff %}
             <h3>Start this lesson</h3>
             {% else %}
             <div class="notification is-warning">
@@ -53,7 +55,7 @@
         {% for lessonplan in steps %}
         <div class="column is-one-quarter">
             <div class="card">
-                {% if request.user|pre_requisite:page %}
+                {% if not locked or request.user.is_staff %}
                 <a href="{% pageurl lessonplan.step %}">
                     <div class="card-image">
                     <figure class="image is-4by3">
@@ -85,5 +87,5 @@
       </div>
     {% endif %}
     </div>
-
+{% endwith %}
 {% endblock %}
