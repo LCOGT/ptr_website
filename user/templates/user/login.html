@@ -19,8 +19,12 @@
                          {{ error|escape }}
                     </div>
       {% endfor %}
+      {% if message %}
+      <div class="notification is-danger">
+        {{ message|escape }}
+      </div>
+      {% endif %}
       <form action="" method="post" id="loginForm">
-        {{form.errors}}
         {% csrf_token %}
 
         <div class="field">
@@ -31,7 +35,7 @@
               <i class="fas fa-user"></i>
             </span>
           </div>
-          <p class="help is-failure">{{form.username.errors.as_text}}</p>
+          <p class="help is-danger">{{form.username.errors.as_text}}</p>
         </div>
 
         <div class="field">
@@ -42,7 +46,7 @@
                 <i class="fa-sharp fa-solid fa-key"></i>
             </span>
           </div>
-          <div class="is-failure">{{form.password.errors.as_text}}</div>
+          <p class="help is-danger">{{form.password.errors.as_text}}</p>
         </div>
 
         <input type="hidden" name="next" value="{{ next }}">

@@ -4,7 +4,8 @@ from django.contrib import messages
 from django.utils import timezone
 
 from learn.models import Step, Course
-from user.models import StepProgress, LessonProgress, CourseEnrollment, Award, BadgeRequirement
+from user.models import StepProgress, LessonProgress, CourseEnrollment, Award 
+from learn.models import find_siblings_step, find_next_lesson
 
 import logging
 
@@ -24,13 +25,13 @@ class UpdateProgress(View):
         step = Step.objects.get(pk=kwargs['step_id'])
         data = {'step': step, 'user': request.user}
         update_generic_progress(data, now, StepProgress)
-        
-        if next := step.get_next_sibling():
+        prev, next = find_siblings_step(step)
+        if next:
             messages.info(request, f"Step {step.title} completed.")
         else:
             data = {'lesson': step.get_parent(), 'user': request.user}
             update_generic_progress(data, now, LessonProgress)
-            if next := step.get_parent().get_next_sibling():
+            if next := find_next_lesson(step.get_parent()):
                 awards = check_for_awards(page=step.get_parent(), user=request.user)
                 if awards:
                     messages.success(request, f"Congratulations! You earned the {awards[0].badge} badge.")

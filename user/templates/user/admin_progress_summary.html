@@ -1,4 +1,5 @@
 {% extends "wagtailadmin/base.html" %}
+{% load wagtailadmin_tags %}
 {% block titletag %}User progress{% endblock %}
 
 {% block extra_css %}
@@ -9,6 +10,10 @@
         }
         table.month td, table.month th {
             padding: 5px;
+        }
+        svg.icon {
+            width:25px;
+            height:25px;
         }
     </style>
 {% endblock %}
@@ -22,13 +27,18 @@
             <tr>
                 <th>User</th>
                 <th>Course</th>
-                <th>Enrolled</th>
+                <th>Completed</th>
             </tr>
-            {% for s in steps %}
+            {% for s in courses %}
             <tr>
-                <td>{{ s.user }}</td>
-                <td>{{ s.course }}</td>
-                <td>{{ s.completed }}</td>
+                <td><a href="{% url "user_progress" s.user.id %}">{{ s.user }}</a></td>
+                <td>{{ s.course }} {{s.complete}}</td>
+                {% if s.completed %}
+                <td>{% icon name="check" classname="" title="completed" %}</td>
+                {% else %}
+                <td>{% icon name="cross" classname="" title="incomplete" %}</td>
+                {% endif %}
+                <td>{{ lesson.last_update }}</td>
             </tr>
             {% endfor %}
     </div>

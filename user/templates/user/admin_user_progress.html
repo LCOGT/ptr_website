@@ -1,0 +1,54 @@
+{% extends "wagtailadmin/base.html" %}
+{% load wagtailadmin_tags %}
+{% block titletag %}User progress{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <style>
+        svg.icon {
+            width:25px;
+            height:25px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% include "wagtailadmin/shared/header.html" with title=title icon="group" %}
+
+    <div class="nice-padding">
+{% for course in courses %}
+   <h2>{{ course.course }}</h2>
+        <table class="listing">
+            <tr>
+                <th>Lesson</th>
+                <th>State</th>
+                <th>Date</th>
+            </tr>
+        {% for lesson in course.lessons %}
+            <tr>
+                <td>{{ lesson.lesson.lesson.title }}
+                <ul>
+                {% for step in lesson.steps %}
+                    <li>
+                        {{ step.step.title }}
+                        {% if step.completed %}
+                        {% icon name="check" title="complete" %}
+                        {% else %}
+                        {% icon name="dots-horizontal" title="incomplete" %}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                </ul>
+                </td>
+                {% if lesson.lesson.completed %}
+                <td>{% icon name="check" title="complete" %}</td>
+                {% else %}
+                <td>{% icon name="dots-horizontal" title="incomplete" %}</td>
+                {% endif %}
+                <td>{{ lesson.lesson.completed_date }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+{%endfor %}
+    </div>
+{% endblock %}

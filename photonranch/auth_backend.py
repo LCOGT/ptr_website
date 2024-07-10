@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password
 from django.contrib.auth import authenticate as dj_authenticate
 from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
@@ -47,6 +46,8 @@ class PortalBackend(object):
 def lco_authenticate(request, username, password):
     token = api_auth(settings.PORTAL_TOKEN_URL, username, password)
     profile, msg = get_profile(token)
+    if msg:
+        messages.info(request, msg)
     if token and profile:
         username = profile[0]
         try:
@@ -55,6 +56,11 @@ def lco_authenticate(request, username, password):
             # Create a new user. There's no need to set a password
             # because Observation Portal auth will always be used.
             user = User(username=username)
+        user.default_proposal = profile[2]
+        user.email = profile[3]
+        user.save()
+
+        # Set DRF token to match Observation Portal token
         try:
             drftoken = Token.objects.get(user=user)
             if drftoken.key != token:
@@ -62,9 +68,6 @@ def lco_authenticate(request, username, password):
                 set_token(user, token)
         except Token.DoesNotExist:
             set_token(user, token)
-        user.default_proposal = profile[2]
-        user.email = profile[3]
-        user.save()
         return user
 
     return None

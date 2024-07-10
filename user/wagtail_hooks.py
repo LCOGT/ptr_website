@@ -6,7 +6,7 @@ from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 
 from user.models import Badge, BadgeRequirement
-from user.views import user_progress
+from user.views import user_progress_summary, user_progress
 
 
 class BadgeViewSet(SnippetViewSet):
@@ -30,12 +30,13 @@ class BadgeRequirementViewSet(SnippetViewSet):
 @hooks.register('register_admin_urls')
 def register_useradmin_url():
     return [
-        path('users/progress/', user_progress, name='user_progress'),
+        path('progress/', user_progress_summary, name='user_progress_all'),
+        path('progress/<int:user_id>/', user_progress, name='user_progress')
     ]
 
 @hooks.register('register_admin_menu_item')
-def register_calendar_menu_item():
-    return MenuItem('User Progress', reverse('user_progress'), icon_name='group')
+def register_user_process_item():
+    return MenuItem('User Progress', reverse('user_progress_all'), icon_name='group')
 
 register_snippet(BadgeViewSet)
 register_snippet(BadgeRequirementViewSet)

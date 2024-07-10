@@ -78,7 +78,10 @@ class Course(Page):
     def get_context(self, request):
         # Update context to include only published posts, ordered by reverse-chron
         context = super().get_context(request)
-        context['lessons'] = self.course_plan.all()
+        lessonprogress = apps.get_model('user', 'LessonProgress')
+        lessonprog = lessonprogress.objects.filter(lesson=OuterRef('pk'), user=request.user)
+        context['lessons'] = self.course_plan.all().annotate(progress=Subquery(lessonprog.values('completed')[:1]))
+        print(context['lessons'][0].__dict__)
         if request.user.is_authenticated:
             context['enrolled'] = Course.objects.filter(courseenrollment__user=request.user).exists()
         return context
@@ -133,9 +136,9 @@ class Step(Page):
         context = super().get_context(request)
         context['breadcrumbs'] = breadcrumbs(self)
         context['course'] = self.get_parent().get_parent()
-        context['prev'], context['next'] = find_siblings(step=self)
-        if not self.get_next_sibling():
-            if next := self.get_parent().get_next_sibling():
+        context['prev'], context['next'] = find_siblings_step(step=self)
+        if not context['next']:
+            if next := find_next_lesson(self.get_parent()):
                 context['next'] = next
                 context['nextlesson'] = True
             else:
@@ -181,24 +184,34 @@ def breadcrumbs(page):
     breadcrumbs.reverse()
     return breadcrumbs
 
-def find_siblings(step):
-    lessonplan = list(step.get_parent().lesson.lesson_plan.all().values_list('step__pk', flat=True))
-    place = lessonplan.index(step.pk)
-    if place == 0 and len(lessonplan) > 1:
-        next = lessonplan[0]
+def find_siblings_step(step):
+    plan = list(step.get_parent().lesson.lesson_plan.all().values_list('step__pk', flat=True))
+    place = plan.index(step.pk)
+    if place == 0 and len(plan) > 1:
+        next = plan[1]
         prev = None
-    elif place == len(lessonplan) - 1:
+    elif place == len(plan) - 1:
         next = None
-        prev = lessonplan[place - 1]
-    elif len(lessonplan) == 1:
+        prev = plan[place - 1]
+    elif len(plan) == 1:
         next = None
         prev = None
     else:
-        next = lessonplan[place + 1]
-        prev = lessonplan[place - 1]
+        next = plan[place + 1]
+        prev = plan[place - 1]
     if next:
         next = Step.objects.get(pk=next)
     if prev:
         prev = Step.objects.get(pk=prev)
     return prev, next
     
+def find_next_lesson(lesson):
+    plan = list(lesson.get_parent().course.course_plan.all().values_list('lesson__pk', flat=True))
+    place = plan.index(lesson.pk)
+    if place == len(plan) - 1:
+        next = None
+    else:
+        next = plan[place + 1]
+    if next:
+        next = Lesson.objects.get(pk=next)
+    return next

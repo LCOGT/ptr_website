@@ -34,7 +34,7 @@
 <div class="pagination" role="navigation" aria-label="pagination">
   <div class="left">
   {% if prev %}
-  <a href="{{ nexturl }}">
+  <a href="{% pageurl prev %}">
   <span class="icon-text has-text-info">
     <span class="icon">
       <i class="fa-solid fa-circle-arrow-left fa-xl"></i>
@@ -55,7 +55,7 @@
         <span class="icon">
           <i class="fa-solid fa-circle-arrow-right fa-xl"></i>
         </span><br/>
-        <span class="pag-subtitle">{{next}}</span>
+        <span class="pag-subtitle">{{next.title}}</span>
       </span>
     </a>
     {% endif %}

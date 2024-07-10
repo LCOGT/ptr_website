@@ -37,6 +37,7 @@
     {% with locked=request.user|is_locked:lesson.lesson %}</p>
     <div class="column is-one-quarter">
         <div class="card">
+            {{ lesson.lesson.progress }}
             {% if not locked or request.user.is_staff %}
             <a href="{% pageurl lesson.lesson %}">
             {% endif %}
