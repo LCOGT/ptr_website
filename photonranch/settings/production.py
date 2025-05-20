@@ -48,4 +48,4 @@ DATABASES = {
 #     EMAIL_HOST_USER     = os.environ.get('EMAIL_USERNAME','')
 #     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD','')
 #     EMAIL_PORT          =  587
-#     DEFAULT_FROM_EMAIL  = 'LCO webmaster <portal@lco.global>'
+#     DEFAULT_FROM_EMAIL  = 'LCO webmaster <change-me@lco.global>'
